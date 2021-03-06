@@ -1,21 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { GiftedChat } from "react-native-gifted-chat";
+export default class App extends React.Component {
+  state = {
+    messages: [
+      {
+        _id: 1,
+        text: "Hello developer",
+        createdAt: new Date()
+      }
+    ]
+  };
+render() {
+    return (
+      <View style={styles.container}>
+        <GiftedChat messages={this.state.messages} />
+      </View>
+    );
+  }
 }
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    flex: 1
+  }
 });
