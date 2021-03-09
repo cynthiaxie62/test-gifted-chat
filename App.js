@@ -2,16 +2,23 @@ import React , { useState, useCallback, useEffect } from 'react';
 import { Button, StyleSheet, Text, View, Image } from "react-native";
 import { GiftedChat, InputToolbar, Actions, Composer, Send } from "react-native-gifted-chat";
 import { Icon } from 'react-native-elements';
+import SocketIOClient from 'socket.io-client';
+
 
 export default function App({props}) {
+  const socket =  SocketIOClient('http://localhost:3000');
+  useEffect(() => {
+    socket.on('message', onReceivedMessage);
+  });
+
   const [messages, setMessages] = useState([
     {
       _id: 1,
-      text: 'My message',
-      createdAt: new Date(Date.UTC(2016, 5, 11, 17, 20, 0)),
+      text: 'BurnCam',
+      createdAt: new Date(Date.UTC(2021, 3, 8, 17, 20, 0)),
       user: {
           _id: 2,
-          name: 'React Native',
+          name: 'Rebecca Russel',
           avatar: 'https://placeimg.com/140/140/animals',
       }
     },
@@ -66,10 +73,20 @@ export default function App({props}) {
     />
   );
 
-  const onSend = useCallback((messages = []) => {
-    console.log("send");
-    setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-  }, []);
+  const onSend = (messages) => {
+    socket.emit('message', messages[0]);
+    _storeMessages(messages);
+  };
+
+  const onReceivedMessage = (messages) => {
+    _storeMessages(messages);
+  }
+
+  const  _storeMessages = (newMessages) => {
+    setMessages(() =>
+      GiftedChat.append(messages, newMessages),
+    );
+  }
 
     return (
       <View style={styles.container}>
@@ -97,7 +114,7 @@ export default function App({props}) {
             renderActions={renderActions}
             user={{
               _id: 1,
-              name: 'Aaron',
+              name: 'Me',
               avatar: 'https://placeimg.com/140/140/animals'
             }}
         />
